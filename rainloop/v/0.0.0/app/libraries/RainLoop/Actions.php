@@ -3485,41 +3485,46 @@ class Actions
 		$mResult = false;
 		$iErrorCode = -1;
 
-		if (2 < \strlen(APP_SITE))
-		{
-			$sValue = $this->licenseHelper($bForce);
+		// if (2 < \strlen(APP_SITE))
+		// {
+		// 	$sValue = $this->licenseHelper($bForce);
 
-			if ($iStart === \time())
-			{
-				\sleep(1);
-			}
+		// 	if ($iStart === \time())
+		// 	{
+		// 		\sleep(1);
+		// 	}
 
-			$iExpired = 0;
-			if ($this->licenseParser($sValue, $iExpired))
-			{
-				$mResult = array(
+		// 	$iExpired = 0;
+		// 	if ($this->licenseParser($sValue, $iExpired))
+		// 	{
+		// 		$mResult = array(
+		// 			'Banned' => false,
+		// 			'Expired' => $iExpired,
+		// 		);
+		// 	}
+		// 	else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
+		// 	{
+		// 		$iErrorCode = -1;
+		// 	}
+		// 	else if ($sValue === 'TOO_MANY_CONNECTIONS')
+		// 	{
+		// 		$iErrorCode = -1;
+		// 	}
+		// 	else
+		// 	{
+		// 		$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
+		// 	}
+		// }
+
+		// if (0 < $iErrorCode && !$mResult)
+		// {
+		// 	throw new \RainLoop\Exceptions\ClientException($iErrorCode);
+		// }
+
+		$mResult = array(
 					'Banned' => false,
-					'Expired' => $iExpired,
+					'Expired' => 0,
 				);
-			}
-			else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
-			{
-				$iErrorCode = -1;
-			}
-			else if ($sValue === 'TOO_MANY_CONNECTIONS')
-			{
-				$iErrorCode = -1;
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
 
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
