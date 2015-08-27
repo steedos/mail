@@ -230,6 +230,115 @@
 					}
 				}
 			}
+
+            .e-groupcontact-item {
+              position: relative;
+              height: 45px;
+              max-height: 45px;
+              line-height: 45px;
+              overflow: hidden;
+              cursor: pointer;
+
+              margin: 0px;
+              border: 0px solid transparent;
+              z-index: 100;
+
+              .delimiter {
+                position: relative;
+                display: block;
+                height: 1px;
+                background-color: #999;
+                opacity: 0.2;
+              }
+
+              .wrapper {
+                padding: 0;
+              }
+
+              .sidebarParent {
+                display: inline-block;
+                width: 6px;
+                background-color: #eee;
+                float: left;
+                height: 100%;
+              }
+
+              &.focused .sidebarParent {
+                background-color: #bbb;
+              }
+
+              &.deleted {
+                max-height: 0px;
+                border-color: transparent !important;
+              }
+
+              .checkedParent {
+                display: inline-block;
+                float: left;
+                padding: 0 8px 0 6px;
+              }
+
+              .shareParent {
+                display: none;
+                float: right;
+                position: relative;
+                margin: 2px 8px 0 5px;
+              }
+
+              .nameParent {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #333;
+                font-size: 16px;
+              }
+
+              .nameParent, .emailParent {
+                white-space: nowrap;
+              }
+
+              .displayName, .displayEmail {
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+
+              .displayImg {
+                display: inline-block;
+                float: right;
+                position: relative;
+                margin: 0 5px;
+              }
+
+              &.shared .shareParent {
+                display: inline-block;
+              }
+
+              &.checked {
+                z-index: 101;
+
+                .sidebarParent {
+                  background-color: #69A8F5;
+                }
+
+                &.focused .sidebarParent {
+                  background-color: darken(#69A8F5, 5%) !important;
+                }
+              }
+
+              &.selected {
+
+                background-color: #fff;
+                z-index: 102;
+
+                .sidebarParent {
+                  background-color: #398CF2;
+                }
+
+                &.focused .sidebarParent {
+                  background-color: darken(#398CF2, 5%) !important;
+                }
+              }
+            }
 		}
 
 		.b-view-content-toolbar {

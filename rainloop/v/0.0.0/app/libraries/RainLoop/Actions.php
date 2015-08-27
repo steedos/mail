@@ -6575,6 +6575,39 @@ class Actions
 		));
 	}
 
+    /**
+     * @return array
+     */
+    public function DoGroups()
+    {
+        $oAccount = $this->getAccountFromToken();
+
+        $sSearch = \trim($this->GetActionParam('Search', ''));
+        $iOffset = (int) $this->GetActionParam('Offset', 0);
+        $iLimit = (int) $this->GetActionParam('Limit', 20);
+        $iOffset = 0 > $iOffset ? 0 : $iOffset;
+        $iLimit = 0 > $iLimit ? 20 : $iLimit;
+
+        $iResultCount = 0;
+        $mResult = array();
+
+        $oAbp = $this->AddressBookProvider($oAccount);
+        if ($oAbp->IsActive())
+        {
+            $iResultCount = 0;
+            $mResult = $oAbp->GetGroups($oAccount->Email(),
+                $iOffset, $iLimit, $sSearch, $iResultCount);
+        }
+
+        return $this->DefaultResponse(__FUNCTION__, array(
+            'Offset' => $iOffset,
+            'Limit' => $iLimit,
+            'Count' => $iResultCount,
+            'Search' => $sSearch,
+            'List' => $mResult
+        ));
+    }
+
 	/**
 	 * @return array
 	 */
@@ -9212,6 +9245,26 @@ class Actions
 				$mResult = $this->responseObject($aList, $sParent, $aParameters);
 				$bHook = false;
 			}
+            else if ('RainLoop\Providers\AddressBook\Classes\Group' === $sClassName)
+            {
+                $mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+                    /* @var $mResponse \RainLoop\Providers\AddressBook\Classes\Group */
+                    'IdGroup' => $mResponse->IdGroup,
+                    'Name' => $mResponse->Name,
+                    'Contacts' => $this->responseObject($mResponse->Contacts, $sParent, $aParameters)
+                ));
+            }
+            else if ('RainLoop\Providers\AddressBook\Classes\GroupContact' === $sClassName)
+            {
+                $mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
+                    /* @var $mResponse \RainLoop\Providers\AddressBook\Classes\GroupContact */
+                    'IdContact' => $mResponse->IdContact,
+                    'IdGroup' => $mResponse->IdGroup,
+                    'Name' => $mResponse->Name,
+                    'Email' => $mResponse->Email,
+                    'Phone' => $mResponse->Phone
+                ));
+            }
 			else
 			{
 				$mResult = '["'.\get_class($mResponse).'"]';

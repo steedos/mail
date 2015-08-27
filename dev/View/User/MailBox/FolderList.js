@@ -276,6 +276,14 @@
 		}
 	};
 
+	FolderListMailBoxUserView.prototype.groupsClick = function ()
+	{
+		if (this.allowContacts)
+		{
+			kn.showScreenPopup(require('View/Popup/Groups'));
+		}
+	};
+
 	module.exports = FolderListMailBoxUserView;
 
 }());

@@ -921,6 +921,21 @@
 		this.defaultRequest(fCallback, 'SocialUsers');
 	};
 
+    /**
+     * @param {?Function} fCallback
+     * @param {number} iOffset
+     * @param {number} iLimit
+     * @param {string} sSearch
+     */
+    RemoteUserStorage.prototype.groups = function (fCallback, iOffset, iLimit, sSearch)
+    {
+        this.defaultRequest(fCallback, 'Groups', {
+            'Offset': iOffset,
+            'Limit': iLimit,
+            'Search': sSearch
+        }, null, '', ['Groups']);
+    };
+
 	module.exports = new RemoteUserStorage();
 
 }());

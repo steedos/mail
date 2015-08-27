@@ -133,6 +133,21 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
+    /**
+     * @param string $sEmail
+     * @param int $iOffset = 0
+     * @param type $iLimit = 20
+     * @param string $sSearch = ''
+     * @param int $iResultCount = 0
+     *
+     * @return array
+     */
+    public function GetGroups($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+    {
+        return $this->IsActive() ? $this->oDriver->GetGroups($sEmail,
+            $iOffset, $iLimit, $sSearch, $iResultCount) : array();
+    }
+
 	/**
 	 * @param string $sEmail
 	 * @param string $mID

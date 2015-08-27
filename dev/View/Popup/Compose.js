@@ -446,6 +446,24 @@
 			return this.allowContacts;
 		});
 
+        this.groupContactsCommand = Utils.createCommand(this, function () {
+
+            if (this.allowContacts)
+            {
+                this.skipCommand();
+
+                var self = this;
+
+                _.delay(function () {
+                    kn.showScreenPopup(require('View/Popup/Groups'),
+                        [true, self.sLastFocusedField]);
+                }, 200);
+            }
+
+        }, function () {
+            return this.allowContacts;
+        });
+
 		Events.sub('interval.2m', function () {
 
 			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&

@@ -1,0 +1,154 @@
+<div class="popups">
+<div class="modal hide b-contacts-content" data-bind="modal: modalVisibility">
+<div class="modal-header b-header-toolbar g-ui-user-select-none">
+    <button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+    <div class="btn-toolbar">
+        <div class="btn-group">
+            <a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
+                <i class="icon-mail icon-white"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="modal-body" style="position: relative;">
+
+<div class="b-list-content g-ui-user-select-none" style="background-color: rgba(183, 177, 177, 0.17);top: 0px;bottom: 0px;" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+    <div class="content g-scrollbox">
+        <div class="content-wrapper">
+            <div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
+                <span class="g-ui-link i18n" data-i18n-text="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
+            </div>
+            <div class="listEmptyList" data-bind="visible: 0 === groups().length && '' === search() && !groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/EMPTY_LIST"></span>
+            </div>
+            <div class="listEmptyListLoading" data-bind="visible: 0 === groups().length && '' === search() && groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+            </div>
+            <div class="listEmptySearchList" data-bind="visible: 0 === groups().length && '' !== search() && !groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/EMPTY_SEARCH"></span>
+            </div>
+            <div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: groups, visible: 0 < groups().length">
+                <div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
+                    <div class="delimiter"></div>
+                    <div class="wrapper">
+                        <div class="nameParent actionHandle">
+                            &nbsp;
+                            <span class="listName" data-bind="text: name"></span>
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="b-list-content g-ui-user-select-none" style="left: 220px;top: 0px;bottom: 0px;" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+    <div class="content g-scrollbox">
+        <div class="content-wrapper">
+            <div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
+                <span class="g-ui-link i18n" data-i18n-text="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
+            </div>
+            <div class="listEmptyList" data-bind="visible: 0 === groups().length && '' === search() && !groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/EMPTY_LIST"></span>
+            </div>
+            <div class="listEmptyListLoading" data-bind="visible: 0 === groups().length && '' === search() && groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+            </div>
+            <div class="listEmptySearchList" data-bind="visible: 0 === groups().length && '' !== search() && !groups.loading()">
+                <span class="i18n" data-i18n-text="CONTACTS/EMPTY_SEARCH"></span>
+            </div>
+            <div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: publicContacts, visible: 0 < groups().length">
+                <div class="e-groupcontact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
+                    <div class="sidebarParent">
+                        &nbsp;
+                    </div>
+                    <div class="delimiter"></div>
+                    <div class="wrapper">
+                        <div class="checkedParent">
+                            <i class="checkboxItem" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
+                        </div>
+                        <div class="shareParent actionHandle">
+                            <i class="icon-share"></i>
+                        </div>
+                        <div class="nameParent actionHandle">
+                            <span class="listName" data-bind="text: name"></span>
+                            &nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="b-view-content" style="left: 440px;top: 0px;" data-bind="nano: true, css: {'read-only': viewReadOnly}">
+    <div class="content g-scrollbox">
+        <div class="content-wrapper">
+            <div class="b-contact-view-desc" data-bind="visible: emptyContactSelection">
+                <span class="i18n" data-i18n-text="CONTACTS/CONTACT_VIEW_DESC"></span>
+            </div>
+            <div data-bind="visible: !emptyContactSelection()">
+                <div class="form-horizontal top-part">
+                    <div class="control-group">
+                        <label class="control-label remove-padding-top fix-width">
+                            <i class="icon-user iconsize24"></i>
+                        </label>
+                        <div class="controls fix-width">
+                                <div class="property-line">
+                                    <span class="contactValueStatic" data-bind="text: group_contact_name" />
+                                    <input type="text" class="contactValueInput" placeholder=""
+                                           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                                           data-bind="value: group_contact_name" />
+                                </div>
+
+
+                        </div>
+                    </div>
+                    <div class="control-group" >
+                        <label class="control-label remove-padding-top fix-width">
+                            <i class="icon-at iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
+                        </label>
+                        <div class="controls fix-width">
+                            <div class="property-line">
+                                <span class="contactValueStatic" data-bind="text: group_contact_email" />
+                                <input type="text" class="contactValueInput" placeholder=""
+                                       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                                       data-bind="value: group_contact_email" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="control-group" >
+                        <label class="control-label remove-padding-top fix-width">
+                            <i class="icon-telephone iconsize24" data-tooltip-placement="left" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
+                        </label>
+                        <div class="controls fix-width">
+                            <div class="property-line">
+                                <span class="contactValueStatic" data-bind="text: group_contact_phone" />
+                                <input type="text" class="contactValueInput" placeholder=""
+                                       autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                                       data-bind="value: group_contact_phone" />
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="control-group">
+                        <div class="controls fix-width">
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>

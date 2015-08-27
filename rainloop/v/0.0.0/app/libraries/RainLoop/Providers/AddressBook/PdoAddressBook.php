@@ -791,6 +791,124 @@ class PdoAddressBook
 		return $aResult;
 	}
 
+    /**
+     * @param string $sEmail
+     * @param int $iOffset = 0
+     * @param int $iLimit = 20
+     * @param string $sSearch = ''
+     * @param int $iResultCount = 0
+     *
+     * @return array
+     */
+    public function GetGroups($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+    {
+        $this->SyncDatabase();
+
+//        $iOffset = 0 <= $iOffset ? $iOffset : 0;
+//        $iLimit = 0 < $iLimit ? (int) $iLimit : 20;
+
+        $arr = explode('@',$sEmail);
+        $domain = $arr[1];
+
+        $iCount = 0;
+//        $aSearchIds = array();
+
+        if (0 < \strlen($sSearch))
+        {
+
+        }
+        else
+        {
+            $sSql = 'SELECT COUNT(DISTINCT id_group) as group_count FROM rainloop_ab_public_groups ';
+
+
+            $oStmt = $this->prepareAndExecute($sSql);
+            if ($oStmt)
+            {
+                $aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+                if ($aFetch && isset($aFetch[0]['group_count']) && is_numeric($aFetch[0]['group_count']) && 0 < (int) $aFetch[0]['group_count'])
+                {
+                    $iCount = (int) $aFetch[0]['group_count'];
+                }
+            }
+        }
+
+        $iResultCount = $iCount;
+
+
+        $aResult = array();
+
+        if (0 < $iCount) {
+            $sSql = 'SELECT * FROM rainloop_ab_public_groups'.' WHERE domain = :domain';
+
+            $sSql .= ' ORDER BY name ASC';
+            $aParams[':domain'] = array($domain, \PDO::PARAM_STR);
+
+            $oStmt = $this->prepareAndExecute($sSql, $aParams);
+            if ($oStmt)
+            {
+                $aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+                $aGroups = array();
+                $aIdGroups = array();
+                if (\is_array($aFetch) && 0 < \count($aFetch))
+                {
+                    foreach ($aFetch as $aItem)
+                    {
+                        $iIdGroup = $aItem && isset($aItem['id_group']) ? (int) $aItem['id_group'] : 0;
+
+                        if (0 < $iIdGroup)
+                        {
+                            $aIdGroups[] = $iIdGroup;
+                            $oGroup = new \RainLoop\Providers\AddressBook\Classes\Group();
+                            $oGroup->IdGroup = (string) $iIdGroup;
+                            $oGroup->Name = isset($aItem['name']) ? (string) $aItem['name'] : '';
+                            $aGroups[$iIdGroup] = $oGroup;
+                        }
+                    }
+                }
+                unset($aFetch);
+
+
+                if (0 < count($aIdGroups)) {
+                    $oStmt->closeCursor();
+
+                    $sSql = 'SELECT * FROM rainloop_ab_public_contacts WHERE id_group IN ('.\implode(',', $aIdGroups).')';
+                    $oStmt = $this->prepareAndExecute($sSql);
+
+                    if ($oStmt)
+                    {
+                        $aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+                        if (\is_array($aFetch) && 0 < \count($aFetch))
+                        {
+                            foreach ($aFetch as $aItem)
+                            {
+                                if ($aItem && isset($aItem['id_group'], $aItem['id_contact'], $aItem['name'], $aItem['email']))
+                                {
+                                    $iId = (int) $aItem['id_group'];
+                                    if (0 < $iId && isset($aGroups[$iId]))
+                                    {
+                                        $oContact = new \RainLoop\Providers\AddressBook\Classes\GroupContact();
+                                        $oContact->IdContact = (int) $aItem['id_contact'];
+                                        $oContact->IdGroup = (int) $aItem['id_group'];
+                                        $oContact->Name = (string) $aItem['name'];
+                                        $oContact->Email = (string) $aItem['email'];
+                                        $oContact->Phone = (string) $aItem['phone'];
+
+                                        $aGroups[$iId]->Contacts[] = $oContact;
+                                    }
+                                }
+                            }
+                        }
+                        unset($aFetch);
+                    }
+                }
+                $aResult = \array_values($aGroups);
+            }
+        }
+
+        return $aResult;
+    }
+
 	/**
 	 * @param string $sEmail
 	 * @param string $mID
@@ -1083,6 +1201,41 @@ class PdoAddressBook
 			}
 		}
 
+
+        // if can not find any data from local rainloop_ab_properties ,then find from rainloop_ab_public_contacts
+        $sSql = 'SELECT id_group, id_contact, name, email, phone FROM rainloop_ab_public_contacts '.
+            'WHERE name LIKE :name OR email LIKE :email';
+
+        $aParams = array(
+            ':name' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR),
+            ':email' => array($this->specialConvertSearchValue($sSearch, '='), \PDO::PARAM_STR)
+        );
+
+        $oStmt = $this->prepareAndExecute($sSql, $aParams);
+        if ($oStmt)
+        {
+            $aFetch = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+            if (\is_array($aFetch) && 0 < \count($aFetch))
+            {
+                foreach ($aFetch as $aItem)
+                {
+                    if ($aItem && isset($aItem['id_group'], $aItem['id_contact'], $aItem['name'], $aItem['email']))
+                    {
+                        $aResult[] = array($aItem['email'], $aItem['name']);
+                    }
+                }
+            }
+
+            unset($aFetch);
+
+            if ($iLimit < \count($aResult))
+            {
+                $aResult = \array_slice($aResult, 0, $iLimit);
+            }
+
+            return $aResult;
+        }
+
 		return array();
 	}
 
@@ -1356,6 +1509,20 @@ CREATE TABLE rainloop_ab_properties (
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
 
+CREATE TABLE rainloop_ab_public_groups (
+	id_group			integer		PRIMARY KEY,
+	name  		varchar(128)		NOT NULL DEFAULT '',
+	domain  		varchar(128)		NOT NULL DEFAULT '',
+);
+
+CREATE TABLE rainloop_ab_public_contacts (
+    id_contact    integer   PRIMARY KEY,
+    id_group    integer   NOT NULL,
+    name     varchar(128)    NOT NULL DEFAULT '',
+    email     varchar(128)    NOT NULL DEFAULT '',
+    phone     varchar(128)    NOT NULL DEFAULT ''
+);
+
 POSTGRESINITIAL;
 				break;
 
@@ -1387,6 +1554,22 @@ CREATE TABLE rainloop_ab_properties (
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
+
+CREATE TABLE rainloop_ab_public_groups (
+	id_group			integer		NOT NULL PRIMARY KEY,
+	name  		text		NOT NULL DEFAULT '',
+	domain  		text		NOT NULL DEFAULT ''
+);
+
+CREATE TABLE rainloop_ab_public_contacts (
+    id_contact    integer   NOT NULL PRIMARY KEY,
+    id_group    integer   NOT NULL,
+    name     text    NOT NULL DEFAULT '',
+    email     text    NOT NULL DEFAULT '',
+    phone     text    NOT NULL DEFAULT ''
+);
+
+
 
 SQLITEINITIAL;
 				break;
