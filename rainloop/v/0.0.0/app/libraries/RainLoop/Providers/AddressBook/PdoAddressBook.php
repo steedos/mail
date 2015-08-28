@@ -819,7 +819,7 @@ class PdoAddressBook
         }
         else
         {
-            $sSql = 'SELECT COUNT(DISTINCT id_group) as group_count FROM rainloop_ab_public_groups ';
+            $sSql = 'SELECT COUNT(DISTINCT id) as group_count FROM rainloop_ab_public_groups ';
 
 
             $oStmt = $this->prepareAndExecute($sSql);
@@ -854,7 +854,7 @@ class PdoAddressBook
                 {
                     foreach ($aFetch as $aItem)
                     {
-                        $iIdGroup = $aItem && isset($aItem['id_group']) ? (int) $aItem['id_group'] : 0;
+                        $iIdGroup = $aItem && isset($aItem['id']) ? (int) $aItem['id'] : 0;
 
                         if (0 < $iIdGroup)
                         {
@@ -872,7 +872,7 @@ class PdoAddressBook
                 if (0 < count($aIdGroups)) {
                     $oStmt->closeCursor();
 
-                    $sSql = 'SELECT * FROM rainloop_ab_public_contacts WHERE id_group IN ('.\implode(',', $aIdGroups).')';
+                    $sSql = 'SELECT * FROM rainloop_ab_public_contacts WHERE group_id IN ('.\implode(',', $aIdGroups).')';
                     $oStmt = $this->prepareAndExecute($sSql);
 
                     if ($oStmt)
@@ -882,14 +882,14 @@ class PdoAddressBook
                         {
                             foreach ($aFetch as $aItem)
                             {
-                                if ($aItem && isset($aItem['id_group'], $aItem['id_contact'], $aItem['name'], $aItem['email']))
+                                if ($aItem && isset($aItem['group_id'], $aItem['id'], $aItem['name'], $aItem['email']))
                                 {
-                                    $iId = (int) $aItem['id_group'];
+                                    $iId = (int) $aItem['group_id'];
                                     if (0 < $iId && isset($aGroups[$iId]))
                                     {
                                         $oContact = new \RainLoop\Providers\AddressBook\Classes\GroupContact();
-                                        $oContact->IdContact = (int) $aItem['id_contact'];
-                                        $oContact->IdGroup = (int) $aItem['id_group'];
+                                        $oContact->IdContact = (int) $aItem['id'];
+                                        $oContact->IdGroup = (int) $aItem['group_id'];
                                         $oContact->Name = (string) $aItem['name'];
                                         $oContact->Email = (string) $aItem['email'];
                                         $oContact->Phone = (string) $aItem['phone'];
@@ -1510,14 +1510,14 @@ CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
 
 CREATE TABLE rainloop_ab_public_groups (
-	id_group			integer		PRIMARY KEY,
+	id			integer		PRIMARY KEY,
 	name  		varchar(128)		NOT NULL DEFAULT '',
 	domain  		varchar(128)		NOT NULL DEFAULT '',
 );
 
 CREATE TABLE rainloop_ab_public_contacts (
-    id_contact    integer   PRIMARY KEY,
-    id_group    integer   NOT NULL,
+    id    integer   PRIMARY KEY,
+    group_id    integer   NOT NULL,
     name     varchar(128)    NOT NULL DEFAULT '',
     email     varchar(128)    NOT NULL DEFAULT '',
     phone     varchar(128)    NOT NULL DEFAULT ''
@@ -1556,14 +1556,14 @@ CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_
 CREATE INDEX id_user_id_contact_rainloop_ab_properties_index ON rainloop_ab_properties (id_user, id_contact);
 
 CREATE TABLE rainloop_ab_public_groups (
-	id_group			integer		NOT NULL PRIMARY KEY,
+	id			integer		NOT NULL PRIMARY KEY,
 	name  		text		NOT NULL DEFAULT '',
 	domain  		text		NOT NULL DEFAULT ''
 );
 
 CREATE TABLE rainloop_ab_public_contacts (
-    id_contact    integer   NOT NULL PRIMARY KEY,
-    id_group    integer   NOT NULL,
+    id    integer   NOT NULL PRIMARY KEY,
+    group_id    integer   NOT NULL,
     name     text    NOT NULL DEFAULT '',
     email     text    NOT NULL DEFAULT '',
     phone     text    NOT NULL DEFAULT ''
