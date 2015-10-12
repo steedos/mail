@@ -26,6 +26,11 @@
 		this.contactsSyncUrl = ko.observable('');
 		this.contactsSyncUser = ko.observable('');
 		this.contactsSyncPass = ko.observable('');
+		this.contactListChecked = ko.computed(function () {
+			return _.filter(this.contacts(), function (oItem) {
+				return oItem.checked();
+			});
+		}, this);
 	}
 
 	ContactUserStore.prototype.populate = function ()

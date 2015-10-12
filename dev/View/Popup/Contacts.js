@@ -399,6 +399,20 @@
 
 		this.sDefaultKeyScope = Enums.KeyState.ContactList;
 
+
+		this.checkAll = ko.computed({
+			'read': function () {
+				return 0 < ContactStore.contactListChecked().length;
+			},
+
+			'write': function (bValue) {
+				bValue = !!bValue;
+				_.each(ContactStore.contacts(), function (oContact) {
+					oContact.checked(bValue);
+				});
+			}
+		});
+
 		kn.constructorEnd(this);
 	}
 
@@ -740,6 +754,9 @@
 					self.contactsPage(Utils.pInt(oPage.value));
 					self.reloadContactList();
 				}
+			})
+			.on('click', '.checkboxCkeckAll', function () {
+				self.checkAll(!self.checkAll());
 			})
 		;
 

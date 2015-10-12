@@ -70,7 +70,10 @@
 		</div>
 		<div class="modal-body" style="position: relative;">
 			<div class="b-list-toolbar">
-				<input type="search" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off"
+				<div style="display: inline-block;float: left;padding: 0 8px 0 6px;line-height: 45px;margin-left: 4px;">
+					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? 'icon-checkbox-checked' : 'icon-checkbox-unchecked'"></i>
+				</div>
+				<input type="search" class="i18n span3 e-search" style="width: 170px;" placeholder="Search" autocorrect="off" autocapitalize="off"
 					data-i18n-placeholder="CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
 			</div>
 			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
