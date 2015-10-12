@@ -841,7 +841,7 @@ class PdoAddressBook
         if (0 < $iCount) {
             $sSql = 'SELECT * FROM rainloop_ab_public_groups'.' WHERE domain = :domain';
 
-            $sSql .= ' ORDER BY name ASC';
+            $sSql .= ' ORDER BY sequence ASC';
             $aParams[':domain'] = array($domain, \PDO::PARAM_STR);
 
             $oStmt = $this->prepareAndExecute($sSql, $aParams);
@@ -873,6 +873,7 @@ class PdoAddressBook
                     $oStmt->closeCursor();
 
                     $sSql = 'SELECT * FROM rainloop_ab_public_contacts WHERE group_id IN ('.\implode(',', $aIdGroups).')';
+                    $sSql .= ' ORDER BY sequence ASC';
                     $oStmt = $this->prepareAndExecute($sSql);
 
                     if ($oStmt)
