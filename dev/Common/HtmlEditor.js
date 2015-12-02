@@ -258,8 +258,8 @@
 						}
 					}
 
-					oConfig.enterMode = window.CKEDITOR.ENTER_BR;
-					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_BR;
+					oConfig.enterMode = window.CKEDITOR.ENTER_P;
+					oConfig.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
 					oConfig.language = Globals.oHtmlEditorLangsMap[sLanguage] || 'en';
 					if (window.CKEDITOR.env)

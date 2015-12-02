@@ -86,8 +86,6 @@
 				textarea.setAttribute('dir', 'ltr');
 				textarea.addClass('cke_plain');
 
-				CKEDITOR.plugins.clipboard.preventDefaultDropOnElement(textarea);
-
 				contentsSpace.append(textarea);
 
 				var editable = editor.editable(new plainEditable(editor, textarea));
