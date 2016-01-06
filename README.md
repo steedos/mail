@@ -20,3 +20,13 @@ It's not recommended to use in production environment.
 http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 Copyright (c) 2015 Rainloop Team
+
+run rainloop
+============
+sudo npm install -g gulp
+sudo npm install
+sudo gulp
+
+build rainloop
+==============
+sudo gulp build
