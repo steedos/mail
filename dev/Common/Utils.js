@@ -566,7 +566,7 @@
 			}
 		;
 
-		fResult = fExecute ? fNonEmpty : Utils.emptyFunction
+		fResult = fExecute ? fNonEmpty : Utils.emptyFunction;
 
 		fResult.enabled = ko.observable(true);
 
