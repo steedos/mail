@@ -23,8 +23,8 @@ Copyright (c) 2015 Rainloop Team
 
 run rainloop
 ============
-sudo npm install -g gulp
-sudo npm install
+sudo npm install -g gulp --registry=https://registry.npm.taobao.org
+sudo npm install --registry=https://registry.npm.taobao.org
 sudo gulp
 
 build rainloop

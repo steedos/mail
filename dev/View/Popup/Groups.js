@@ -189,21 +189,24 @@
 
         this.publicContacts.subscribe(Utils.windowResizeCallback);
 
+        this.allCheckedGroupContacts = [];
+
         this.contactsChecked = ko.computed(function () {
-            return _.filter(this.publicContacts(), function (oItem) {
+            var currentGroupChecked = _.filter(this.publicContacts(), function (oItem) {
                 return oItem.checked();
             });
+            this.allCheckedGroupContacts = _.filter(_.uniq(this.allCheckedGroupContacts.concat(currentGroupChecked)), function(c){
+                return c.checked() == true;
+            });
+            return this.allCheckedGroupContacts;
         }, this);
 
         this.contactsCheckedOrSelected = ko.computed(function () {
-
             var
                 aChecked = this.contactsChecked(),
                 oSelected = this.currentContact()
                 ;
-
             return _.union(aChecked, oSelected ? [oSelected] : []);
-
         }, this);
 
         this.contactsCheckedOrSelectedUids = ko.computed(function () {
@@ -217,8 +220,8 @@
             '.e-contact-item.focused');
 
         this.selector.on('onItemSelect', _.bind(function (oGroup) {
-            this.populateViewGroup(oGroup ? oGroup : null);
             this.emptyContactSelection(true);
+            this.populateViewGroup(oGroup ? oGroup : null);
             if (!oGroup)
             {
                 this.emptySelection(true);
@@ -379,23 +382,34 @@
     GroupsPopupView.prototype.populateViewGroup = function (oGroup)
     {
         var
-            aList = []
+            aList = [],
+            selectedContact = null,
+            allCheckedGroupContacts = this.allCheckedGroupContacts
             ;
         this.emptySelection(false);
         if (oGroup)
         {
             if (Utils.isNonEmptyArray(oGroup.contacts))
             {
+                
                 _.each(oGroup.contacts, function (aProperty) {
                     if (aProperty && aProperty[0])
                     {
-                        aList.push(new GroupContactModel(aProperty[0], aProperty[1], aProperty[2], aProperty[3], aProperty[4]));
+                        selectedContact = _.find(allCheckedGroupContacts,function(c){
+                            return c.idContact() == aProperty[0];
+                        })
+                        if (selectedContact) {
+                            aList.push(selectedContact);
+                        } else {
+                            aList.push(new GroupContactModel(aProperty[0], aProperty[1], aProperty[2], aProperty[3], aProperty[4]));
+                        }
+                        
                     }
                 });
             }
         }
         Utils.delegateRunOnDestroy(this.publicContacts());
-
+        this.publicContacts([]);
         this.publicContacts(aList);
     };
 
@@ -488,11 +502,17 @@
         kn.routeOn();
 
         this.currentGroup(null);
+        this.currentContact(null);
         this.emptySelection(true);
+        this.emptyContactSelection(true);
         this.search('');
 
         Utils.delegateRunOnDestroy(this.groups());
+        Utils.delegateRunOnDestroy(this.publicContacts());
+        Utils.delegateRunOnDestroy(this.allCheckedGroupContacts);
         this.groups([]);
+        this.publicContacts([]);
+        this.allCheckedGroupContacts = [];
 
         this.sLastComposeFocusedField = '';
 

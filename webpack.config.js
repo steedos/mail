@@ -14,11 +14,11 @@ module.exports = {
 	},
 	plugins: [
 //		new webpack.optimize.CommonsChunkPlugin('common.js'),
-		new webpack.optimize.OccurenceOrderPlugin()
+		new webpack.optimize.OccurrenceOrderPlugin()
 	],
 	resolve: {
-		modulesDirectories: [__dirname + '/dev/'],
-		extensions: ['', '.js'],
+		modules: [__dirname + '/dev/'],
+		extensions: ['.js'],
 		alias: {
 			"ko": __dirname  + "/dev/External/ko.js"
 		}
