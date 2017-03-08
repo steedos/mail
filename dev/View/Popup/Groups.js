@@ -196,7 +196,7 @@
                 return oItem.checked();
             });
             this.allCheckedGroupContacts = _.filter(_.uniq(this.allCheckedGroupContacts.concat(currentGroupChecked)), function(c){
-                return c.checked() == true;
+                return c.checked() === true;
             });
             return this.allCheckedGroupContacts;
         }, this);
@@ -396,8 +396,8 @@
                     if (aProperty && aProperty[0])
                     {
                         selectedContact = _.find(allCheckedGroupContacts,function(c){
-                            return c.idContact() == aProperty[0];
-                        })
+                            return c.idContact() === aProperty[0];
+                        });
                         if (selectedContact) {
                             aList.push(selectedContact);
                         } else {

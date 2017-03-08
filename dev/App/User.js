@@ -1128,6 +1128,21 @@
 			oTop = null,
 			oBottom = null,
 
+			fSetHeight = function (iHeight) {
+				if (iHeight)
+				{
+					if (oTop)
+					{
+						oTop.attr('style', 'height:' + iHeight + 'px');
+					}
+
+					if (oBottom)
+					{
+						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + iHeight) + 'px');
+					}
+				}
+			},
+
 			fResizeFunction = function (oEvent, oObject) {
 				if (oObject && oObject.size && oObject.size.height)
 				{
@@ -1145,21 +1160,6 @@
 				'maxHeight': iMaxHeight,
 				'handles': 's',
 				'stop': fResizeFunction
-			},
-
-			fSetHeight = function (iHeight) {
-				if (iHeight)
-				{
-					if (oTop)
-					{
-						oTop.attr('style', 'height:' + iHeight + 'px');
-					}
-
-					if (oBottom)
-					{
-						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + iHeight) + 'px');
-					}
-				}
 			},
 
 			fDisable = function (bDisable) {
